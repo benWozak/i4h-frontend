@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import Nav from "@/components/layout/Nav";
 
 const geistSans = localFont({
@@ -31,15 +33,59 @@ interface NavigationData {
   items: NavItem[];
 }
 
+interface BrandData {
+  companyLogo: {
+    url: string;
+  };
+  brandColors: {
+    primary: string;
+    secondary: string;
+  };
+  socialLinks: {
+    facebook: string;
+    instagram: string;
+    twitter: string;
+    linkedin: string;
+  };
+}
+
+const defaultNavigation: NavigationData = { items: [] };
+const defaultBrand: BrandData = {
+  companyLogo: { url: "" },
+  brandColors: { primary: "", secondary: "" },
+  socialLinks: { facebook: "", instagram: "", twitter: "", linkedin: "" },
+};
+
 async function getNavigation(): Promise<NavigationData> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/main-navigation`,
-    { next: { revalidate: 60 } }
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch navigation data");
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/main-navigation`,
+      { next: { revalidate: 60 } }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to fetch navigation data");
+    }
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return defaultNavigation;
   }
-  return res.json();
+}
+
+async function getBrandData(): Promise<BrandData> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/brand`,
+      { next: { revalidate: 60 } }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to fetch global config data");
+    }
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return defaultBrand;
+  }
 }
 
 export default async function RootLayout({
@@ -48,15 +94,30 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const navigation = await getNavigation();
+  const brand = await getBrandData();
+
+  if (!brand || !navigation) return notFound();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header>
-          <Nav items={navigation.items} />
-        </header>
-        {children}
+        <ErrorBoundary>
+          <header>
+            <Nav items={navigation?.items} logo={brand?.companyLogo?.url} />
+          </header>
+          {children}
+          <footer>
+            {/* Add footer with social links */}
+            <div>
+              <a href={brand?.socialLinks.facebook}>Facebook</a>
+              <a href={brand?.socialLinks.instagram}>Instagram</a>
+              <a href={brand?.socialLinks.twitter}>Twitter</a>
+              <a href={brand?.socialLinks.linkedin}>LinkedIn</a>
+            </div>
+          </footer>
+        </ErrorBoundary>
       </body>
     </html>
   );

@@ -2,42 +2,38 @@ import { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import { HeroProps } from "@/types";
 
-interface Props {
+interface LandingData {
   siteName: string;
   hero?: HeroProps;
 }
 
-async function getLandingData(): Promise<Props> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/landing-page?depth=2`,
-    { next: { revalidate: 60 } }
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch landing data");
-  }
-  const data = await res.json();
-  // console.log("Raw landing data:", JSON.stringify(data, null, 2));
+const defaultLandingData: LandingData = {
+  siteName: "Default Site Name",
+  hero: {
+    headline: "Welcome",
+    subline: "This is a default hero section",
+    textPlacement: "center",
+    scrim: false,
+    background: { type: "none", viewportHeight: "partial" },
+  },
+};
 
-  // If there's an image, fetch its details
-  if (data.hero?.background?.type === "image" && data.hero.background.image) {
-    const imageId = data.hero.background.image;
-    const imageRes = await fetch(
-      `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/media/${imageId}`,
+async function getLandingData(): Promise<LandingData> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/landing-page?depth=2`,
       { next: { revalidate: 60 } }
     );
-    if (imageRes.ok) {
-      const imageData = await imageRes.json();
-      data.hero.background.image = {
-        url: imageData.url,
-        alt: imageData.alt || "",
-        width: imageData.width,
-        height: imageData.height,
-      };
-    } else {
-      console.error("Failed to fetch image data");
+    if (!res.ok) {
+      throw new Error("Failed to fetch landing data");
     }
+    const data = await res.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return defaultLandingData;
   }
-  return data;
 }
 
 export async function generateMetadata(): Promise<Metadata> {

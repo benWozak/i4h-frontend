@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -19,50 +20,67 @@ interface NavItem {
 }
 
 interface NavProps {
-  items: NavItem[];
+  items?: NavItem[];
+  logo?: string;
 }
 
-const Nav: React.FC<NavProps> = ({ items }) => {
+const Nav: React.FC<NavProps> = ({ items, logo }) => {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        {items.map((item, index) => (
-          <NavigationMenuItem key={index}>
-            {item.type === "link" ? (
-              <Link href={`/${item.link?.slug || ""}`} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  {item.label}
-                </NavigationMenuLink>
-              </Link>
-            ) : (
-              <>
-                <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {item.dropdownItems?.map((dropdownItem, dropdownIndex) => (
-                      <li key={dropdownIndex}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={`/${dropdownItem.link.slug}`}
-                            className={cn(
-                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            )}
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              {dropdownItem.label}
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </>
-            )}
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
+    <div className="flex items-center justify-between px-4 py-2">
+      {!!logo && (
+        <Link href="/">
+          <Image src={logo} alt="Company Logo" width={100} height={50} />
+        </Link>
+      )}
+      <NavigationMenu>
+        <NavigationMenuList>
+          {!!items &&
+            items.map((item, index) => (
+              <NavigationMenuItem key={index}>
+                {item.type === "link" ? (
+                  <Link
+                    href={`/${item.link?.slug || ""}`}
+                    legacyBehavior
+                    passHref
+                  >
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      {item.label}
+                    </NavigationMenuLink>
+                  </Link>
+                ) : (
+                  <>
+                    <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                        {item.dropdownItems?.map(
+                          (dropdownItem, dropdownIndex) => (
+                            <li key={dropdownIndex}>
+                              <NavigationMenuLink asChild>
+                                <Link
+                                  href={`/${dropdownItem.link.slug}`}
+                                  className={cn(
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                  )}
+                                >
+                                  <div className="text-sm font-medium leading-none">
+                                    {dropdownItem.label}
+                                  </div>
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </NavigationMenuContent>
+                  </>
+                )}
+              </NavigationMenuItem>
+            ))}
+        </NavigationMenuList>
+      </NavigationMenu>
+    </div>
   );
 };
 

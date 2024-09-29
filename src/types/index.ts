@@ -1,3 +1,33 @@
+export interface ImageProps {
+  id: string;
+  url: string;
+  filename: string;
+  mimeType: string;
+  filesize: number;
+  width: number;
+  height: number;
+  sizes: {
+    thumbnail: {
+      url: string;
+      width: number;
+      height: number;
+    };
+    card: {
+      url: string;
+      width: number;
+      height: number;
+    };
+    tablet: {
+      url: string;
+      width: number;
+      height: number;
+    };
+  };
+  createdAt: string;
+  updatedAt: string;
+  alt?: string;
+}
+
 export interface HeroProps {
   headline: string;
   subline?: string;
