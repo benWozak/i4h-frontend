@@ -5,6 +5,7 @@ import "./globals.css";
 
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import Nav from "@/components/layout/Nav";
+import Footer from "@/components/layout/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -108,15 +109,7 @@ export default async function RootLayout({
             <Nav items={navigation?.items} logo={brand?.companyLogo?.url} />
           </header>
           {children}
-          <footer>
-            {/* Add footer with social links */}
-            <div>
-              <a href={brand?.socialLinks.facebook}>Facebook</a>
-              <a href={brand?.socialLinks.instagram}>Instagram</a>
-              <a href={brand?.socialLinks.twitter}>Twitter</a>
-              <a href={brand?.socialLinks.linkedin}>LinkedIn</a>
-            </div>
-          </footer>
+          <Footer brand={brand} />
         </ErrorBoundary>
       </body>
     </html>

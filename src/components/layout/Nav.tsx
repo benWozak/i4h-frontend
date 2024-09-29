@@ -29,7 +29,12 @@ const Nav: React.FC<NavProps> = ({ items, logo }) => {
     <div className="flex items-center justify-between px-4 py-2">
       {!!logo && (
         <Link href="/">
-          <Image src={logo} alt="Company Logo" width={100} height={50} />
+          <Image
+            src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${logo}`}
+            alt="Company Logo"
+            width={100}
+            height={50}
+          />
         </Link>
       )}
       <NavigationMenu>
