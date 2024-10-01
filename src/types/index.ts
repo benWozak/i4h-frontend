@@ -28,6 +28,62 @@ export interface ImageProps {
   alt?: string;
 }
 
+export interface NavProps {
+  id: number
+  items: NavItem[]
+  updatedAt: string
+  createdAt: any
+  globalType: string
+}
+
+export interface NavItem {
+  id: string
+  label: string
+  type: string
+  dropdownItems: DropdownItem[]
+  link: any
+}
+
+export interface DropdownItem {
+  id: string
+  label: string
+  isPrimary: any
+  description: any
+  link: Link
+}
+
+export interface Link {
+  id: number
+  name: string
+  slug: string
+  hero: any[]
+  seo: any[]
+  updatedAt: string
+  createdAt: string
+}
+export interface BrandProps {
+  id: number
+  companyLogo: ImageProps
+  brandColors: BrandColors
+  socialLinks: SocialLinks
+  updatedAt: string
+  createdAt: any
+  globalType: string
+}
+
+export interface BrandColors {
+  primary: string
+  secondary: string
+}
+
+export interface SocialLinks {
+  facebook: string
+  instagram: string
+  twitter: string
+  linkedin: string
+}
+
+
 export interface HeroProps {
   headline: string;
   subline?: string;

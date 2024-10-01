@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { BrandProps, NavProps } from "@/types";
+
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
-import Nav from "@/components/layout/Nav";
+import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
 const geistSans = localFont({
@@ -30,34 +32,7 @@ interface NavItem {
   dropdownItems?: Array<{ label: string; link: { slug: string } }>;
 }
 
-interface NavigationData {
-  items: NavItem[];
-}
-
-interface BrandData {
-  companyLogo: {
-    url: string;
-  };
-  brandColors: {
-    primary: string;
-    secondary: string;
-  };
-  socialLinks: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-    linkedin: string;
-  };
-}
-
-const defaultNavigation: NavigationData = { items: [] };
-const defaultBrand: BrandData = {
-  companyLogo: { url: "" },
-  brandColors: { primary: "", secondary: "" },
-  socialLinks: { facebook: "", instagram: "", twitter: "", linkedin: "" },
-};
-
-async function getNavigation(): Promise<NavigationData> {
+async function getNavigation(): Promise<NavProps> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/main-navigation`,
@@ -69,11 +44,11 @@ async function getNavigation(): Promise<NavigationData> {
     return res.json();
   } catch (error) {
     console.error(error);
-    return defaultNavigation;
+    throw new Error("Failed to fetch navigation data");
   }
 }
 
-async function getBrandData(): Promise<BrandData> {
+async function getBrandData(): Promise<BrandProps> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/brand`,
@@ -85,7 +60,7 @@ async function getBrandData(): Promise<BrandData> {
     return res.json();
   } catch (error) {
     console.error(error);
-    return defaultBrand;
+    throw new Error("Failed to fetch global config data");
   }
 }
 
@@ -94,20 +69,27 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navigation = await getNavigation();
-  const brand = await getBrandData();
+  const navigation: NavProps = await getNavigation();
+  const brand: BrandProps = await getBrandData();
+
+  // console.log("Nav:", navigation);
+  // console.log("Brand:", brand);
 
   if (!brand || !navigation) return notFound();
 
   return (
     <html lang="en">
       <body
+        style={
+          {
+            "--brand-primary": brand.brandColors.primary,
+            "--brand-secondary": brand.brandColors.secondary,
+          } as React.CSSProperties
+        }
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ErrorBoundary>
-          <header>
-            <Nav items={navigation?.items} logo={brand?.companyLogo?.url} />
-          </header>
+          <Header navigation={navigation} brand={brand} />
           {children}
           <Footer brand={brand} />
         </ErrorBoundary>

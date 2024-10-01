@@ -51,7 +51,7 @@ export default function Hero({
 
   return (
     <div
-      className={`relative w-full overflow-hidden ${backgroundClasses} ${heightClass}`}
+      className={`w-full overflow-hidden ${backgroundClasses} ${heightClass}`}
     >
       {background.type === "image" && background.image && (
         <div ref={parallaxRef} className="absolute inset-0">
