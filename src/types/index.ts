@@ -65,7 +65,7 @@ export interface BrandProps {
   id: number
   companyLogo: ImageProps
   brandColors: BrandColors
-  socialLinks: SocialLinks
+  socialLinks: SocialLinkProps
   updatedAt: string
   createdAt: any
   globalType: string
@@ -76,7 +76,7 @@ export interface BrandColors {
   secondary: string
 }
 
-export interface SocialLinks {
+export interface SocialLinkProps {
   facebook: string
   instagram: string
   twitter: string
