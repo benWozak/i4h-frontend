@@ -32,7 +32,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
       <div className="relative">
         <Search
           className={cn(
-            "absolute left-3 top-1/2 pb-1 transform -translate-y-1/2 text-gray-400 z-10",
+            "absolute left-3 top-1/2 pb-1 transform -translate-y-1/2 text-gray-400",
             iconClassName
           )}
         />

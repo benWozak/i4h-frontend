@@ -22,7 +22,7 @@ interface Props {
 export default function NavBar({ items }: Props) {
   return (
     <NavigationMenu>
-      <NavigationMenuList>
+      <NavigationMenuList className="flex-col md:flex-row">
         {!!items &&
           items.map((item: NavItem, index: number) => {
             if (item?.dropdownItems?.length) {
@@ -30,7 +30,7 @@ export default function NavBar({ items }: Props) {
                 <NavigationMenuItem key={index}>
                   <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid gap-x-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                    <ul className="grid gap-x-3 p-6 w-screen md:w-[400px] lg:w-[500px] lg:grid-cols-[1fr_1fr]">
                       {item.dropdownItems.map(
                         (dropdownItem: DropdownItem, index: number) => {
                           if (dropdownItem.isPrimary) {
