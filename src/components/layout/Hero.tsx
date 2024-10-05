@@ -86,7 +86,7 @@ export default function Hero({
       {background.type === "image" && background.image && (
         <div ref={parallaxRef} className="absolute inset-0 h-[120%] -top-[10%]">
           <Image
-            src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${background.image.url}`}
+            src={`${background.image.url}`}
             alt={background.image.alt || ""}
             layout="fill"
             objectFit="cover"

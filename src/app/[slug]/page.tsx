@@ -1,3 +1,4 @@
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
@@ -10,18 +11,6 @@ interface PageData {
   hero?: HeroProps;
 }
 
-// const defaultPageData: PageData = {
-//   name: "Default Page",
-//   slug: "default",
-//   hero: {
-//     headline: "Default Page",
-//     subline: "This is a default page hero section",
-//     textPlacement: "center",
-//     scrim: false,
-//     background: { type: "none", viewportHeight: "partial" },
-//   },
-// };
-
 async function getPage(slug: string): Promise<PageData | null> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages?where[slug][equals]=${slug}`,
@@ -32,7 +21,7 @@ async function getPage(slug: string): Promise<PageData | null> {
   }
   const data = await res.json();
 
-  return data;
+  return data.docs[0];
 }
 
 export async function generateMetadata({
@@ -41,6 +30,7 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const page = await getPage(params.slug);
+
   if (!page) {
     return {
       title: "Page Not Found",
@@ -66,6 +56,9 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const page = await getPage(params.slug);
+  const { isEnabled: isDraft } = draftMode();
+
+  console.log(page);
 
   if (!page) {
     notFound();
@@ -73,6 +66,18 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   return (
     <div>
+      {isDraft && (
+        <div className="bg-yellow-100 p-4">
+          This page is a preview.{" "}
+          <a
+            href="/api/disable-draft"
+            className="underline hover:text-blue-600"
+          >
+            Click here
+          </a>{" "}
+          to exit preview mode.
+        </div>
+      )}
       {page.hero && (
         <Hero
           headline={page.hero.headline}

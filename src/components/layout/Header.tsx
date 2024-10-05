@@ -18,7 +18,7 @@ function Header({ navigation, brand }: Props) {
         {!!brand?.companyLogo?.url && (
           <a className="block" href="/">
             <img
-              src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${brand.companyLogo.url}`}
+              src={`${brand.companyLogo.url}`}
               alt={
                 brand.companyLogo.alt ? brand.companyLogo.alt : "Company Logo"
               }

@@ -8,7 +8,6 @@ type Props = {
 function Footer({ brand }: Props) {
   return (
     <footer className="bg-brand-primary">
-      <hr />
       <div className="mx-auto px-4 pt-4 sm:px-6 lg:px-8">
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-32">
           <div className="max-w-lg lg:max-w-none">

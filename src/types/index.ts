@@ -103,3 +103,26 @@ export interface HeroProps {
     video?: { url: string };
   };
 }
+
+export interface PageData {
+  docs: [
+    {
+      id: 1;
+      name: string;
+      slug: string;
+      hero: HeroProps;
+      seo: any; // TODO: define SEO Type
+      updatedAt: string;
+      createdAt: string;
+    }
+  ];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number | null;
+  page: number | null;
+  pagingCounter: number | null;
+  prevPage: number | null;
+  totalDocs: number | null;
+  totalPages: number | null;
+}

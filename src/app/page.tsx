@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import { HeroProps } from "@/types";
+import Banner from "@/components/blocks/Banner";
 
 interface LandingData {
   siteName: string;
@@ -57,8 +58,8 @@ export default async function Home() {
           background={landingData.hero.background}
         />
       )}
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start p-8">
-        <h1>{landingData.siteName}</h1>
+      <main className="">
+        <Banner />
       </main>
     </div>
   );
