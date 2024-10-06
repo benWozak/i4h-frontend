@@ -11,36 +11,6 @@ interface PageData {
   hero?: HeroProps;
 }
 
-async function getPage(slug: string): Promise<PageData | null> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages?where[slug][equals]=${slug}`,
-    { next: { revalidate: 60 } }
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch page");
-  }
-  const data = await res.json();
-
-  return data.docs[0];
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const page = await getPage(params.slug);
-
-  if (!page) {
-    return {
-      title: "Page Not Found",
-    };
-  }
-  return {
-    title: page.name,
-  };
-}
-
 export async function generateStaticParams() {
   const pages = await fetchWithRetry<{ docs: PageData[] }>(
     `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages`,
@@ -54,11 +24,44 @@ export async function generateStaticParams() {
   );
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const page = await getPage(params.slug);
-  const { isEnabled: isDraft } = draftMode();
+async function getPage(
+  slug: string,
+  isDraft: boolean
+): Promise<PageData | null> {
+  const url = `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages?where[slug][equals]=${slug}&depth=1`;
+  const res = await fetch(url, {
+    next: { tags: ["page", slug], revalidate: isDraft ? 0 : 60 },
+  });
 
-  console.log(page);
+  if (!res.ok) {
+    throw new Error("Failed to fetch page");
+  }
+
+  const data = await res.json();
+  return data.docs[0] || null;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const { isEnabled: isDraft } = draftMode();
+  const page = await getPage(params.slug, isDraft);
+
+  if (!page) {
+    return {
+      title: "Page Not Found",
+    };
+  }
+  return {
+    title: page.name,
+  };
+}
+
+export default async function Page({ params }: { params: { slug: string } }) {
+  const { isEnabled: isDraft } = draftMode();
+  const page = await getPage(params.slug, isDraft);
 
   if (!page) {
     notFound();
