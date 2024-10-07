@@ -12,7 +12,7 @@ interface LandingData {
 async function getLandingData(isDraft: boolean): Promise<LandingData> {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/landing-page?depth=2`,
+      `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/globals/landing-page?depth=2&draft=${isDraft}`,
       {
         next: { tags: ["landing-page"], revalidate: isDraft ? 0 : 60 },
       }

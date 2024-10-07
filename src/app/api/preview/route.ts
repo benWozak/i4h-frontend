@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
   draftMode().enable()
 
   // Redirect to the path from the fetched post
-  // We don't redirect to searchParams.slug as that might lead to open redirect vulnerabilities
   if (global === 'landing-page') {
     redirect('/')
   } else {

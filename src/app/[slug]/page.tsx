@@ -13,7 +13,7 @@ interface PageData {
 
 export async function generateStaticParams() {
   const pages = await fetchWithRetry<{ docs: PageData[] }>(
-    `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages`,
+    `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages?where[_status][equals]=published`,
     { cache: "force-cache" }
   );
 
@@ -28,7 +28,7 @@ async function getPage(
   slug: string,
   isDraft: boolean
 ): Promise<PageData | null> {
-  const url = `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages?where[slug][equals]=${slug}&depth=1`;
+  const url = `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/pages?where[slug][equals]=${slug}&depth=1&draft=${isDraft}`;
   const res = await fetch(url, {
     next: { tags: ["page", slug], revalidate: isDraft ? 0 : 60 },
   });
